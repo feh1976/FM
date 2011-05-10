@@ -1,4 +1,4 @@
 
-public class KontoListe {
+/*public class KontoListe {
   Konten konten[] 
-}
+}*/

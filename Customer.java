@@ -1,5 +1,3 @@
-import java.util.LinkedList;
-
 /* 
   This assignment illustrates how specifications (esp invariants and 
   preconditions)  written in a formal language can help in removing 

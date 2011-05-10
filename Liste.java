@@ -1,55 +1,62 @@
 
-//@ public invariant first != null;
-//@ public invariant last != null;
-//@ public invariant first != last;
-//@ public invariant first.next != null;
-//@ public invariant last.next == null;
-//@ public invariant first.value == null;
-//@ public invariant last.value == null;
-//@ public invariant (\forall Node n; contain(n.value) && n != first && n != last ==> n.value != null);
-//@ public invariant (\forall Node n; contain(n.value) ==> n.next != null);
-//@ public invariant first.isEnd(last);
 public class Liste {
-	private Node first;
-	private Node last;
 	
-	public Liste(){
-		first = new Node();
-		last = new Node();
-		first.setNext(last);
+	//@ public invariant first != null;
+	//@ public invariant last != null;
+	//@ public invariant first.next != null;
+	private StartNode first;
+	private EndNode last;
+
+	
+	public Liste() {
+		last = new EndNode();
+		first = new StartNode(last);
 	}
-	
+
 	//@ requires obj != null;
-	//@ requires last != null;
-  /*public void add(Object obj){
-  	if (!contain(obj)){
-  		Node temp = new Node();
-  		if (temp != null){
-    		last.value = obj;
-    		last.next = temp;
-  	  	//last = temp;
-  		}
-  	}
-  }*/
-  
-  /*public void remove(Object obj){
-  	
-  }*/
-  
+	public void add(Object obj) {
+		if (!this.contain(obj)) {
+			DataNode n = new DataNode(obj,this.last);
+			this.getLast().setNext(n);
+		}
+	}
+
 	//@ requires obj != null;
-  /*public boolean contain(Object obj){
-  	return get(obj) != null;
-  }*/
-  
-  //@ requires obj != null;
-  //@ requires first != null;
-  public Object get(Object obj){
-  	Node n = first.getNext();
-  	while (n != last){
-  		if (n.value == obj)
-  			return n;
-  		n = n.next;
-  	}
-  	return null;
-  }
+	public boolean remove(Object obj) {
+		if (!this.contain(obj)) {
+			Node n = this.first;
+			while (n != this.last) {
+				DataNode temp = (DataNode) ((DataNode) n).getNext();
+				if (temp.value == obj) {
+					((DataNode) n).setNext(temp.getNext());
+					return true;
+				} else
+					n = temp;
+			}
+		}
+		return false;
+	}
+
+	//@ requires obj != null;
+	public boolean contain(Object obj) {
+		return get(obj) != null;
+	}
+
+	//@ requires obj != null;
+	public Object get(Object obj) {
+		Node n = this.first.next; 
+		while (n != this.last) {
+			if (((DataNode) n).value == obj)
+				return n;
+			n = ((DataNode) n).getNext();
+		}
+		return null;
+	}
+
+	private DataNode getLast() {
+		Node n = this.first;
+		while (((DataNode) n).getNext() != this.last)
+			n = ((DataNode) n).getNext();
+		return (DataNode) n;
+	}
 }
