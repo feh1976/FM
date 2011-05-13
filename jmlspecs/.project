@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>jmlspecs</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>escspecs.jar</name>
+			<type>1</type>
+			<location>/home/feh/.eclipse/org.eclipse.platform_3.5.0_155965261/plugins/mobius.escjava2.esctools_2.0.22/escspecs-javacard.jar</location>
+		</link>
+	</linkedResources>
+</projectDescription>
