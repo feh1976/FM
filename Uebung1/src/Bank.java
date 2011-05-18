@@ -1,9 +1,13 @@
+//@ public invariant bank != null;
+public class Bank extends AccountHolder {
+  private static Bank bank = new Bank();
 
-public class Bank extends Person {
-	
-	private static Bank bank = new Bank();
-	
-	public static Bank getBank(){
-		return bank;
-	}
+  public Bank() {
+    super(Integer.MIN_VALUE);
+  }
+
+  //@ ensures \result == bank;
+  public static Bank getBank(){
+    return bank;
+  }
 }

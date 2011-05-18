@@ -7,11 +7,7 @@ public class Person {
 	// Bonität
 	int solvency;
   
-  public Person(int limit, int bonität){
+  public Person(int limit, int bonitaet){
   	konten = new Liste();
   }
-  
-  
-  
-  
 }

@@ -1,12 +1,10 @@
 
 public class Gemeinschaftskonto extends Konto {
-  public static Konto bank = new Konto(new Customer(true));
-  public Gemeinschaftskonto(Customer owner) {
-    super(owner);
-  }
+  Person owner[] = new Person[2];
   
-  /* Override
-  public boolean isOwner(Customer person){
-	  return owner == person || owner.partner == person;
-  }*/
+  //@ requires owner1 != null && owner2 != null;
+  //@ requires owner1.partner == owner2 && owner2.partner == owner1;
+  public Gemeinschaftskonto(Person owner1, Person owner2) {
+    super();
+  }
 }

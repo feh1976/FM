@@ -17,6 +17,7 @@ class Customer extends Person {
 
 	/* CONSTRUCTOR */
 	Customer(boolean isMale) {
+		super();
 		this.isMale = isMale;
 		// @ assume (\forall Customer c; c.partner != this);
 	}
