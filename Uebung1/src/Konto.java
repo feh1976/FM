@@ -1,4 +1,6 @@
 public class Konto {
+  /** Accountbesitzer */
+  AccountHolder owner;
 	/** Kontostand */
 	int balance;
 	
