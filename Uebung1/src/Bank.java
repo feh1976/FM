@@ -1,5 +1,5 @@
-//@ public invariant bank != null;
 public class Bank extends AccountHolder {
+  //@ public invariant bank != null;
   private static Bank bank = new Bank();
 
   public Bank() {
