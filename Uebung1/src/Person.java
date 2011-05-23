@@ -1,3 +1,6 @@
+/**
+ * Eine Person reprŠsentiert einen Kunden einer Bank.
+ */
 public class Person extends AccountHolder {
   //@ public invariant partner != this;
   //@ public invariant isMale() <==> !isFemale();
@@ -6,6 +9,18 @@ public class Person extends AccountHolder {
   //@ public invariant isMarried() ==> male != partner.male;
   
   // TODO: StammdatensŠtze?
+  // Vorname, PLZ, Wohnort, Stra§e, Hausnummer, Telefon, ...
+  
+  /** Name */
+  String name;
+  
+  /**
+   * Getter-Methode fŸr den Namen.
+   * @return
+   */
+  //@ ensures \result == name;
+  public String getName(){ return name; }
+  
   /** Geschlecht */
   boolean male;
 
@@ -24,11 +39,14 @@ public class Person extends AccountHolder {
   /** EinschŠtzung, wie kreditwŸrdig ein Kunde ist. */
   int bonitaet;
   
+  //@ requires name.length() >= 2;
+  //@ ensures this.name == name;
   //@ ensures this.male == male;
   //@ ensures bonitaet == 0;
   //@ ensures !isMarried();
-  public Person(boolean male){
+  public Person(/*@non_null*/String name, boolean male){
 	  super(0);
+	  this.name = name;
 	  this.male = male;
 	  partner = null;
 	  bonitaet = 0;
@@ -36,6 +54,10 @@ public class Person extends AccountHolder {
   }
   
   /* METHODS */
+  /**
+   * marry verheiratet die Ÿbergebene Person mit der hiesigen.
+   * @param partner: Ehepartner
+   */
   //@ requires partner == this;
   //@ requires isMale() != partner.isMale();
   //@ requires !isMarried();
@@ -46,6 +68,9 @@ public class Person extends AccountHolder {
     this.partner.partner = this;
   }
 
+  /*void divorce(){
+  }*/
+  
   //@ ensures \result == (partner != null);
   /*@pure*/ public boolean isMarried() {
     return partner != null;
