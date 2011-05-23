@@ -1,9 +1,11 @@
 public class Konto {
+// @ public invariant balance >= Integer.MIN_VALUE && balance <= Integer.MAX_VALUE;
   /** Accountbesitzer */
   AccountHolder owner;
 	/** Kontostand */
 	int balance;
 	
+  //@ ensures balance == 0;     
 	public Konto(){
 	  balance = 0;
 	}
@@ -23,16 +25,16 @@ public class Konto {
 	 * @param amount: Geldbetrag, der ausgezahlt werden soll.
 	 */
 	//@ requires amount >= 0;
-	// TODO: limit testen sonst Exceptionw werfen
+	// TODO: limit testen sonst Exception werfen
 	//@ ensures balance == \old(balance) - amount;
 	public void drawOut(int amount) {
 		balance = balance - amount;
 	}
 
 	/**
-	 * †berweisung
-	 * @param amount: Geldbetrag, der Ÿberwiesen werden soll.
-	 * @param receiver: EmpfŠnger des Geldes
+	 * ï¿½berweisung
+	 * @param amount: Geldbetrag, der ï¿½berwiesen werden soll.
+	 * @param receiver: Empfï¿½nger des Geldes
 	 */
 	//@ requires amount >= 0;
 	//@ requires receiver != null;
