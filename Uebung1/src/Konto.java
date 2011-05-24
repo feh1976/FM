@@ -1,7 +1,5 @@
 public class Konto {
-  /** Accountbesitzer */
-  AccountHolder owner;
-  
+    
 	/** Kontostand */
 	int balance;
 	
@@ -15,6 +13,7 @@ public class Konto {
 	 * @param amount: Höhe des Geldbetrages
 	 */
 	//@ requires amount >= 0;
+  //@ ensures balance == \old(balance) + amount;
 	public void inc(int amount){
 	  balance += amount;
 	}
@@ -24,6 +23,7 @@ public class Konto {
    * @param amount: Höhe des Geldbetrages
    */
   //@ requires amount >= 0;
+	//@ ensures balance == \old(balance) - amount;
 	public void dec(int amount){
     balance -= amount;
 	}
@@ -32,9 +32,4 @@ public class Konto {
 	/*@pure*/ public int getBalance(){
 	  return balance;
 	}
-	
-  //@ ensures \result == (konto != null && konto.owner != null);
-  /*@pure*/ public static boolean isValidKonto(Konto konto){
-    return konto != null && konto.owner != null;
-  }
 }

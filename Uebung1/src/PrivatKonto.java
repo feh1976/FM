@@ -1,39 +1,41 @@
-public class PrivatKonto extends Konto {
-  //@ public invariant owner != null;
-	Person owner;
-
-	//@ requires person != null;
-	public PrivatKonto(Person person) {
-	  super();
-		this.owner = person;
-	}
+public class PrivatKonto extends PersonenKonto {
+  
+  //@ requires person != null;
+  public PrivatKonto(Person person) {
+    super(person);
+  }
 
   /**
    * Einzahlen
+   * 
    * @param amount: Geldbetrag, der eingezahlt wird.
    */
-  //@ requires owner != null;
   //@ requires amount >= 0;
   //@ ensures balance == \old(balance) + amount;
   //@ ensures owner.total == \old(owner.total) + amount;
-  public void deposit(int amount) {
-    balance += amount;
+  public void deposit(int amount, /* @non_null */BankKonto bankKonto) {
+    inc(amount);
     owner.total += amount;
   }
 
   /**
    * Auszahlen
+   * 
    * @param amount: Geldbetrag, der ausgezahlt werden soll.
    */
   //@ requires amount >= 0;
   //@ ensures balance == \old(balance) - amount;
+  //@ ensures owner.total == \old(owner.total) - amount;
   //@ signals (LimitReached e) owner.total - amount < owner.limit;
-  protected void drawOut(int amount) throws LimitReached {
-    balance = balance - amount;
+  protected void drawOut(int amount, /* @non_null */BankKonto bankKonto)
+      throws LimitReached {
+    dec(amount);
+    owner.total -= amount;
   }
 
   /**
-   * Überweisung
+   * Überweisung auf ein Privatkonto
+   * 
    * @param amount: Geldbetrag, der überwiesen werden soll.
    * @param receiver: Empfänger des Geldes
    */
@@ -41,13 +43,37 @@ public class PrivatKonto extends Konto {
   //@ requires receiver != null;
   //@ requires receiver.owner != null;
   //@ ensures balance == \old(balance) - amount;
-  public void transfere(int amount, Konto receiver) {
-    balance = balance - amount;
+  //@ ensures owner.total == \old(owner.total) - amount;
+  //@ ensures receiver.balance == \old(receiver.balance) + amount;
+  //@ ensures receiver.owner.total == \old(receiver.owner.total) + amount;
+  //@ signals (LimitReached e) owner.total - amount < owner.limit;
+  public void transfere(int amount, PrivatKonto receiver) throws LimitReached {
+    dec(amount);
+    owner.total -= amount;
     receiver.inc(amount);
+    receiver.owner.total += amount;
   }
-
-  // Lastschrift
-  public void debit(int amount) {
-    balance = balance + amount;
+  
+  /**
+   * Überweisung auf ein Gemeinschaftskonto
+   * 
+   * @param amount: Geldbetrag, der überwiesen werden soll.
+   * @param receiver: Empfänger des Geldes
+   */
+  //@ requires amount >= 0;
+  //@ requires receiver != null;
+  //@ requires receiver.owner != null;
+  //@ ensures balance == \old(balance) - amount;
+  //@ ensures owner.total == \old(owner.total) - amount;
+  //@ ensures receiver.balance == \old(receiver.balance) + amount;
+  //@ ensures receiver.owner.total == \old(receiver.owner.total) + amount/2;
+  //@ ensures receiver.owner2.total == \old(receiver.owner2.total) + amount/2;
+  //@ signals (LimitReached e) owner.total - amount < owner.limit;
+  public void transfere(int amount, Gemeinschaftskonto receiver) throws LimitReached {
+    dec(amount);
+    owner.total -= amount;
+    receiver.inc(amount);
+    receiver.owner.total += amount/2;
+    receiver.owner2.total += amount/2;
   }
 }
