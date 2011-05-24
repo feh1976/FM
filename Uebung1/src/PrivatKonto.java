@@ -66,14 +66,14 @@ public class PrivatKonto extends PersonenKonto {
   //@ ensures balance == \old(balance) - amount;
   //@ ensures owner.total == \old(owner.total) - amount;
   //@ ensures receiver.balance == \old(receiver.balance) + amount;
-  //@ ensures receiver.owner.total == \old(receiver.owner.total) + amount/2;
+  //@ ensures receiver.owner.total == \old(receiver.owner.total) + amount/2 + amount%2;
   //@ ensures receiver.owner2.total == \old(receiver.owner2.total) + amount/2;
   //@ signals (LimitReached e) owner.total - amount < owner.limit;
   public void transfere(int amount, Gemeinschaftskonto receiver) throws LimitReached {
     dec(amount);
     owner.total -= amount;
     receiver.inc(amount);
-    receiver.owner.total += amount/2;
+    receiver.owner.total += amount/2 + amount%2;
     receiver.owner2.total += amount/2;
   }
 }
