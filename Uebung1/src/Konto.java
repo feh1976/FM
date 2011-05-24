@@ -11,8 +11,8 @@ public class Konto {
 	}
 	
 	/**
-	 * Erhšht den Kontostand.
-	 * @param amount: Hšhe des Geldbetrages
+	 * ErhÃ¶ht den Kontostand.
+	 * @param amount: HÃ¶he des Geldbetrages
 	 */
 	//@ requires amount >= 0;
 	public void inc(int amount){
@@ -21,7 +21,7 @@ public class Konto {
 
   /**
    * Senkt den Kontostand.
-   * @param amount: Hšhe des Geldbetrages
+   * @param amount: HÃ¶he des Geldbetrages
    */
   //@ requires amount >= 0;
 	public void dec(int amount){

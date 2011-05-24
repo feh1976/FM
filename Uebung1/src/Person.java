@@ -1,5 +1,5 @@
 /**
- * Eine Person repr둺entiert einen Kunden einer Bank.
+ * Eine Person repr채sentiert einen Kunden einer Bank.
  */
 public class Person extends AccountHolder {
   //@ public invariant partner != this;
@@ -8,14 +8,14 @@ public class Person extends AccountHolder {
   //@ public invariant isMarried() ==> partner.partner == this;
   //@ public invariant isMarried() ==> male != partner.male;
   
-  // TODO: Stammdatens둻ze?
-  // Vorname, PLZ, Wohnort, Stra쬮, Hausnummer, Telefon, ...
+  // TODO: Stammdatens채tze?
+  // Vorname, PLZ, Wohnort, Stra횩e, Hausnummer, Telefon, ...
   
   /** Name */
   String name;
   
   /**
-   * Getter-Methode f웦 den Namen.
+   * Getter-Methode f체r den Namen.
    * @return
    */
   //@ ensures \result == name;
@@ -36,7 +36,7 @@ public class Person extends AccountHolder {
   /** Ehepartner */
   Person partner;
   
-  /** Einsch둻zung, wie kreditw웦dig ein Kunde ist. */
+  /** Einsch채tzung, wie kreditw체rdig ein Kunde ist. */
   int bonitaet;
   
   //@ requires name.length() >= 2;
@@ -55,7 +55,7 @@ public class Person extends AccountHolder {
   
   /* METHODS */
   /**
-   * marry verheiratet die 웑ergebene Person mit der hiesigen.
+   * marry verheiratet die 체bergebene Person mit der hiesigen.
    * @param partner: Ehepartner
    */
   //@ requires partner == this;

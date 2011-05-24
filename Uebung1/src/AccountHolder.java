@@ -10,12 +10,12 @@ public class AccountHolder {
    * */
   int total;
   
-  /** †berziehungslimit */
+  /** Ãœberziehungslimit */
   int limit;
 
   /**
    * Konstruktor
-   * @param limit: Geldbetrag, den man maximal Ÿberziehen kann.
+   * @param limit: Geldbetrag, den man maximal Ã¼berziehen kann.
    */
   //@ requires limit <= 0;
   //@ ensures this.limit == limit;

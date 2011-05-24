@@ -33,9 +33,9 @@ public class PrivatKonto extends Konto {
   }
 
   /**
-   * †berweisung
-   * @param amount: Geldbetrag, der Ÿberwiesen werden soll.
-   * @param receiver: EmpfŠnger des Geldes
+   * Ãœberweisung
+   * @param amount: Geldbetrag, der Ã¼berwiesen werden soll.
+   * @param receiver: EmpfÃ¤nger des Geldes
    */
   //@ requires amount >= 0;
   //@ requires receiver != null;
