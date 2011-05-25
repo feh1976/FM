@@ -1,12 +1,13 @@
-
+/**
+ * Konto, dass einer Person gehört.
+ */
 public class PersonenKonto extends Konto {
- //@ public invariant owner != null;
-  Person owner;
+  /** Kontobesitzer */
+  /*@non_null*/Person owner;
   
-  //@ requires person != null;
   //@ ensures owner == person;
-  public PersonenKonto(Person person) {
+  public PersonenKonto(/*@non_null*/Person person) {
     super();
-    this.owner = person;
+    owner = person;
   }
 }

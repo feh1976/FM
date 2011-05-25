@@ -8,6 +8,9 @@ public class Person extends AccountHolder {
   //@ public invariant isMarried() ==> partner.partner == this;
   //@ public invariant isMarried() ==> male != partner.male;
   
+  /** Bank, bei der man Kunde */
+  /*@non_null*/Bank bank;
+  
   // TODO: Stammdatensätze?
   // Vorname, PLZ, Wohnort, Straße, Hausnummer, Telefon, ...
   
@@ -44,8 +47,9 @@ public class Person extends AccountHolder {
   //@ ensures this.male == male;
   //@ ensures bonitaet == 0;
   //@ ensures !isMarried();
-  public Person(/*@non_null*/String name, boolean male){
+  public Person(/*@non_null*/Bank bank, /*@non_null*/String name, boolean male){
 	  super(0);
+	  this.bank = bank;
 	  this.name = name;
 	  this.male = male;
 	  partner = null;
@@ -58,11 +62,12 @@ public class Person extends AccountHolder {
    * marry verheiratet die übergebene Person mit der hiesigen.
    * @param partner: Ehepartner
    */
-  //@ requires partner == this;
+  //@ requires partner != this;
   //@ requires isMale() != partner.isMale();
+  //@ requires bank == partner.bank;
   //@ requires !isMarried();
   //@ requires !partner.isMarried();
-  //@ ensures isValidMarried();
+  //@ ensures isValidMarried() && partner.isValidMarried();
   void marry(/*@non_null*/Person partner) {
     this.partner = partner;
     this.partner.partner = this;

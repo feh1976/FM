@@ -1,15 +1,11 @@
 /**
  * Accountbesitzer
- *
  */
 public class AccountHolder {
   //@ invariant total >= limit;
-  /**
-   * Total
-   * Gesamtbetrag auf allen Konten
-   * */
-  int total;
   
+  /** Gesamtbetrag auf allen Konten */
+  int total;
   /** Überziehungslimit */
   int limit;
 
@@ -18,6 +14,7 @@ public class AccountHolder {
    * @param limit: Geldbetrag, den man maximal überziehen kann.
    */
   //@ requires limit <= 0;
+  //@ ensures total == 0;
   //@ ensures this.limit == limit;
   public AccountHolder(int limit){
     total = 0;

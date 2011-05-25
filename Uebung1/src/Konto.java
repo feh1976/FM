@@ -1,5 +1,7 @@
+/**
+ * Kontovorlage: Geldbetrag der steigt/sinkt.
+ */
 public class Konto {
-    
 	/** Kontostand */
 	int balance;
 	
