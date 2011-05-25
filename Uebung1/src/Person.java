@@ -11,7 +11,7 @@ public class Person extends AccountHolder {
   /** Bank, bei der man Kunde */
   /*@non_null*/Bank bank;
   
-  // TODO: Stammdatensätze?
+  // weitere Stammdaten:
   // Vorname, PLZ, Wohnort, Straße, Hausnummer, Telefon, ...
   
   /** Name */
@@ -73,8 +73,14 @@ public class Person extends AccountHolder {
     this.partner.partner = this;
   }
 
-  /*void divorce(){
-  }*/
+  //@ requires isValidMarried();
+  //@ requires (\forall Gemeinschaftskonto gk; gk.owner != this && gk.owner2 != this);
+  //@ requires partner.partner != null;
+  //@ ensures !\old(this.partner).isMarried() && !isMarried();
+  void divorce(){
+    this.partner.partner = null;
+    this.partner = null;
+  } 
   
   //@ ensures \result == (partner != null);
   /*@pure*/ public boolean isMarried() {

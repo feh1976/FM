@@ -7,7 +7,6 @@ public class PrivatKonto extends PersonenKonto {
 
   /**
    * Einzahlen
-   * 
    * @param amount: Geldbetrag, der eingezahlt wird.
    */
   //@ requires amount >= 0;
@@ -18,6 +17,7 @@ public class PrivatKonto extends PersonenKonto {
     inc(amount);
     owner.total += amount;
     bankKonto.inc(amount);
+    owner.bank.log("Es wurde "+amount+" eingezahlt.");
   }
 
   /**
@@ -32,6 +32,7 @@ public class PrivatKonto extends PersonenKonto {
   protected void drawOut(int amount, /* @non_null */BankKonto bankKonto) throws LimitReached {
     dec(amount);
     owner.total -= amount;
+    owner.bank.log("Es wurde "+amount+" abgehoben.");
   }
 
   /**
@@ -52,6 +53,7 @@ public class PrivatKonto extends PersonenKonto {
     owner.total -= amount;
     receiver.inc(amount);
     receiver.owner.total += amount;
+    receiver.owner.bank.log("Es wurde "+amount+" dank Überweisung erhalten.");
   }
   
   /**
@@ -75,5 +77,6 @@ public class PrivatKonto extends PersonenKonto {
     receiver.inc(amount);
     receiver.owner.total += JML.halfup(amount);
     receiver.owner2.total += amount/2;
+    receiver.owner.bank.log("Es wurde "+amount+" dank Überweisung erhalten.");
   }
 }

@@ -24,6 +24,7 @@ public class Gemeinschaftskonto extends PersonenKonto {
     inc(amount);
     owner.total += JML.halfup(amount);
     owner2.total += amount/2;
+    owner.bank.log("Es wurde "+amount+" eingezahlt.");
   }
 
   /**
@@ -40,6 +41,7 @@ public class Gemeinschaftskonto extends PersonenKonto {
     dec(amount);
     owner.total -= JML.halfup(amount);
     owner2.total -= amount/2;
+    owner.bank.log("Es wurde "+amount+" abgehoben.");
   }
 
   /**
@@ -62,6 +64,8 @@ public class Gemeinschaftskonto extends PersonenKonto {
     owner2.total -= amount/2;
     receiver.inc(amount);
     receiver.owner.total += amount;
+    owner.bank.log("Es wurde "+amount+" überwiesen.");
+    receiver.owner.bank.log("Es wurde "+amount+" dank Überweisung erhalten.");
   }
   
   /**
@@ -72,6 +76,8 @@ public class Gemeinschaftskonto extends PersonenKonto {
    */
   //@ requires amount >= 0;
   //@ requires receiver.owner != null;
+  //@ requires owner.bank != null;
+  //@ requires receiver.owner.bank != null;
   //@ ensures balance == \old(balance) - amount;
   //@ ensures owner.total == \old(owner.total) - JML.halfup(amount);
   //@ ensures owner2.total == \old(owner2.total) - amount/2;
@@ -87,5 +93,7 @@ public class Gemeinschaftskonto extends PersonenKonto {
     receiver.inc(amount);
     receiver.owner.total += JML.halfup(amount);
     receiver.owner2.total += amount/2;
+    owner.bank.log("Geld überwiesen.");
+    receiver.owner.bank.log("Geld durch Überweisung erhalten.");
   }
 }

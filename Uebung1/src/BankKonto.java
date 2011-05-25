@@ -25,13 +25,16 @@ public class BankKonto extends Konto {
   //@ signals (LimitReached e) owner.openCredits + amount > owner.total + owner.total/10;
   //@ signals (CreditDenied e) konto.owner.bonitaet > amount;
   public void grantCredit(int amount, /*@non_null*/PrivatKonto konto) throws LimitReached, CreditDenied {
-    if (konto.owner.bonitaet > amount) throw new CreditDenied();
-    if (owner.openCredits + amount > owner.total + owner.total/10) throw new LimitReached();
+    if (konto.owner.bonitaet > amount)
+      throw new CreditDenied();
+    if (owner.openCredits + amount > owner.total + owner.total/10)
+      throw new LimitReached();
     dec(amount);
     konto.inc(amount);
     konto.owner.total += amount;
     konto.owner.bonitaet -= amount;
     owner.openCredits += amount;
+    konto.owner.bank.log("Kredit in Hähe von "+amount+" gewährt.");
   }
   
   /**
@@ -52,6 +55,7 @@ public class BankKonto extends Konto {
     konto.owner.total -= amount;
     konto.owner.bonitaet += amount;
     owner.openCredits -= amount;
+    konto.owner.bank.log("Kredit in Hähe von "+amount+" zurückerhalten.");
   }
   
   /**
@@ -80,6 +84,7 @@ public class BankKonto extends Konto {
     konto.owner.bonitaet -= JML.halfup(amount);
     konto.owner2.bonitaet -= amount/2;
     owner.openCredits += amount;
+    konto.owner.bank.log("Kredit in Hähe von "+amount+" gewährt.");
   }
   
   /**
@@ -104,5 +109,6 @@ public class BankKonto extends Konto {
     konto.owner.bonitaet += JML.halfup(amount);
     konto.owner2.bonitaet += amount/2;
     owner.openCredits -= amount;
+    konto.owner.bank.log("Kredit in Hähe von "+amount+" zurückerhalten.");
   }
 }
