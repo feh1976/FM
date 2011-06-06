@@ -16,10 +16,12 @@ sig Node {
 fact {all n:Node | n not in n.^next}
 
 -- Keine Listenzusammenführung
-fact {all n:Node | all n':Node | n != n' => n.next != n'.next}
+--fact {all n:Node | all n':Node | n != n' => n.next != n'.next}
+
+run {}
 
 -- Jeder Knoten ist in genau einer Liste
-fact{all n:Node | one l:List | n in l.anchor.*next} 
+--fact{all n:Node | one l:List | n in l.anchor.*next} 
 
 check {all n:Node | all n':Node | n != n' => n.next != n'.next}
 
@@ -53,10 +55,13 @@ fun removeFromList[l:List, i:Int]: List{
 }
 
 fun addToList [l:List, i:Int]: List{
-  {l':List | one n:Node | l'.anchor = n && n.value = i && n.next = l.anchor}
+  {l':List | l'.anchor.value = i && l'.anchor.next = l.anchor}
 }
+fact{some List}
 
 fun sortList[l:List]: List{
 {addToList[sortList[removeFromList[l,max[l].value]],max[l].value]}
 }
+
+
 
