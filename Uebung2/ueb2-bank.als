@@ -2,28 +2,31 @@
 -- Aufgabe 2
 -- Implementation des Banksystems
 -- -----------------
-sig Economic{
-  bank: Bank,
-  person: set Person,
-  konto: set Konto
+-- Wirtschaft
+sig Economy{
+  bank: Bank, -- Model gilt für eine Bank
+  person: set Person, -- Menge der Kunden
+  konto: set Konto -- Menge aller Konten
 }
 
+-- Namen der Kunden
 sig Name{}
 
+-- Alle Kontobesitzer (inklusive der Bank)
 abstract sig AccountHolder {
-  limit : Int,
-  total : Int
+  limit : Int, -- Kontolimit, bis zu welchem Betrag der Kontostand sinken kann
+  total : Int -- Summe aller Kontobeträge
 }{
   all a:AccountHolder |  a.total >= a.limit
 }
 
-
+-- Menschliche Kontobesitzer
 sig Person extends AccountHolder {
-  name : Name,
-  partner : Person,
-  male : Int,
-  bank : Bank,
-  bonitaet : Int
+  name : Name, -- Name der Person
+  partner : Person, -- Ehepartner der Person
+  male : Int, -- Geschlecht der Person
+  bank : Bank, -- Bankinstitut, bei dem die Person registriert ist
+  bonitaet : Int -- Bonität
 }{
   all p:Person | p.partner != p
   all p:Person | p.name != none
@@ -33,54 +36,62 @@ sig Person extends AccountHolder {
   all p:Person | p.bank != none
 }
 
-fun marry[p:Person, p':Person]: set Person {
+-- Verheiratet Person p mit Person p'
+fun marry[p:Person, p':Person] : set Person {
   {one q:Person | p.male != p'.male && p.partner = none && p'.partner = none 
   => q = p && q.partner = p'}
   +{one q':Person | p.male != p'.male && p.partner = none && p'.partner = none 
   =>  q' = p' && q'.partner = p}
 }
 
-fun divorce[p:Person, p':Person]: set Person {
+-- Scheidet Person p und Person p'
+fun divorce[p:Person, p':Person] : set Person {
   {one q:Person | all g:GemeinschaftsKonto | g.owner != p && g.owner2 != p && 
    p.partner = p'.partner => q = p && q.partner = none}
   +{one q':Person | all g:GemeinschaftsKonto | g.owner != p' && g.owner2 != p' &&  
   p.partner = p'.partner =>  q' = p' && q'.partner = none}
 }
 
-
+-- Die Bank als Kontobesitzer
 sig Bank extends AccountHolder {
-  maxCredits : Int,
-  openCredits : Int
+  maxCredits : Int, -- Maximale Anzahl gleichzeitig offener Kredite
+  openCredits : Int -- Anzahl der momentan offenen Kredite
 }{
   all b:Bank | 0 <= b.openCredits <= b.maxCredits 
   all b:Bank | 0 <= b.maxCredits 
 }
 
+-- Ein Konto
 abstract sig Konto {
   balance : Int
 }
 
-sig BankKonto extends Konto{
+-- Ein Konto, welches speziell einer Bank gehört
+sig BankKonto extends Konto {
   owner : Bank
 }{
   all b:BankKonto | b.owner != none
 }
 
-fun grantCredit[a:Int, p:PrivatKonto, e:Economic]: Economic{
+-- Gewährt einem Kunden einen Kredit
+fun grantCredit[a:Int, p:PrivatKonto, e:Economic] : Economic {
 {e':Economic
 }
 
+-- Ein Konto, welches mindestens einer Person gehören muss
 abstract sig PersonenKonto extends Konto{
-  owner : Person
+  owner : Person -- Ein Kontoinhaber
 }{
   all p:PersonenKonto | p.owner != none
 }
 
+-- Ein Gemeinschaftskonto, dass von 2 Personen besessen werden muss
 sig GemeinschaftsKonto extends PersonenKonto {
-  owner2 : Person
+  owner2 : Person -- zweiter Kontoinhaber
 }{
   all g:GemeinschaftsKonto | g.owner2 != none
   all g:GemeinschaftsKonto | g.owner2 != g.owner
 }
 
+-- Ein Privatkonto
 sig PrivatKonto extends PersonenKonto {}
