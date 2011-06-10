@@ -11,7 +11,19 @@ open util/boolean as Bool
 -- Neue Elemente werde am Anfang eingefügt
 sig List { 
   next: lone List,
-  value: one Int
+  value: one Int,
+  add: Int -> lone List,
+  app: List -> lone List--,
+  --remove: List -> lone List
+}
+
+-- Ein einzelnes Element an die Liste anhängen
+fact {
+  all l,r:List | all i:Int | r = add[l,i] implies (head[r] = head[l]) and (tail[l] = none implies head[tail[r]] = i && tail[tail[r]] = none) and (tail[l] != none implies add[tail[l],i] != none && tail[r] = add[tail[l],i])
+}
+
+fact {
+  all l,l',r:List | r = app[l,l'] => head[r] = head[l] and (tail[l] != none => app[tail[l],l'] != none && tail[r] = app[tail[l],l']) and (tail[l]= none => tail[r] = l')
 }
 
 -- Keine Kreise
@@ -59,16 +71,6 @@ fun max[l:List] : Int {
   {i:Int | all j:allElem[l] | i in allElem[l] && i >= j}
 }
 
--- Ein einzelnes Element an die Liste anhängen
-fun add [l:List, i:Int] : List {
-  {l':List | l'.value = i && l'.next = l}
-}
-
--- Hänge Liste l' an Liste l an
-fun add[l:List, l':List] : List {
-  --{r:List | all l'':(l' - last[l']) | one b:list l'' in r && l in allSublists[r] } -- TODO: l' vor l setzen
-}
-
 --fun removeFromList[l:List, i:Int]: List {
 --  {l':List | i not in allElem[l] => l' = l && (i in allElem[l] => (l'.))}
 -- l.value = i => l' = l.next || l'.next.value = i => l'.next.value = i && n in contain[l,n] => n.next = n.next.next}
@@ -85,4 +87,4 @@ fact{some List}
 -- Unendliches Universum = verboten
 --check {all l:List | all i:Int| sizeOfList[addToList[l,i]] = 1.plus[sizeOfList[l]]}
 
-run {}
+run {} for 5 List
