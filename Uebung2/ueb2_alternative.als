@@ -9,21 +9,65 @@ open util/boolean as Bool
 -- Einfachverkette Liste
 -- Jede Liste einhält einen Wert und verweist auf eine neue Liste
 -- Neue Elemente werde am Anfang eingefügt
+-- [A] -> [B] -> [C] -> ... -> [N] ->
+--  |         |          |                   |
+--  v        v          v                  v
+-- [a]      [b]       [c]                [n]
 sig List { 
-  next: lone List,
-  value: one Int,
-  add: Int -> lone List,
-  app: List -> lone List--,
-  --remove: List -> lone List
+  next: lone List, -- Verweis auf ein nachfolgendes Listenelement
+  value: one Int, -- Wert des Knotens
+  add: Int -> lone List, -- Fügt einen Wert ans Listenende
+  app: List -> lone List, -- Hängt eine Liste an die andere an
+  remove: List -> lone List, -- Löscht Werte aus der Liste
+  sort: lone List
 }
 
--- Ein einzelnes Element an die Liste anhängen
-fact {
-  all l,r:List | all i:Int | r = add[l,i] implies (head[r] = head[l]) and (tail[l] = none implies head[tail[r]] = i && tail[tail[r]] = none) and (tail[l] != none implies add[tail[l],i] != none && tail[r] = add[tail[l],i])
+-- add: Ein einzelnes Element an die Liste anhängen
+-- Gehe die Liste bis zum Ende durch und hänge eine neue Liste mit Wert i an, die auf none zeigt
+fact { -- add
+  all l,r:List | all i:Int | r = add[l,i] => 
+	(head[r] = head[l]) && 
+	(tail[l] = none => head[tail[r]] = i && tail[tail[r]] = none) && 
+	(tail[l] != none => add[tail[l],i] != none && tail[r] = add[tail[l],i])
 }
 
+-- app: Hängt eine Liste an die andere an
+-- Die gemergte Liste fängt mit einer Liste an. Wenn diese Liste abgearbeitet ist, wird die andere angehangen.
+fact { -- app
+  all l,l',r:List | r = app[l,l'] => 
+	head[r] = head[l] && 
+	(tail[l] != none => app[tail[l],l'] != none && tail[r] = app[tail[l],l']) && 
+	(tail[l]= none => tail[r] = l')
+}
+
+-- remove: Löscht ein Listenelement
+-- Die Ausgangsliste wird übernommen. Wenn die zu löschende Liste enthalten ist, wird das eine Element übersprungen.
+-- Löscht man eine Liste, die nicht enhalten ist, bleibt die Ursprungsliste erhalten.
+fact { -- remove
+  all l,l',r:List | r = remove[l,l'] => 
+	(l = l' => r = l.next) && 
+	(l != l' => (l.next = none => r = l) && 
+	(l.next != none => r.value = l.value && r.next = remove[l.next,l'])
+  )
+}
+
+
+-- Beim Sortieren bleibt die Länge der Liste gleich
+fact { all l:List | sort[l] != none => size[l] = size[sort[l]] }
+-- Elemente der Liste bleiben beim Sortieren gleich
+fact { all l:List | sort[l] != none => allElem[l] = allElem[sort[l]] }
+-- Elemente der Liste sind nach dem Sortieren aufsteigend
+fact { all l:List | sort[l] != none => sort[l].value <= sort[l].^next.value }
+
+-- sort: Sortiert die Liste
 fact {
-  all l,l',r:List | r = app[l,l'] => head[r] = head[l] and (tail[l] != none => app[tail[l],l'] != none && tail[r] = app[tail[l],l']) and (tail[l]= none => tail[r] = l')
+  all l,r:List | r = sort[l] => 
+	(size[l] = 1 => r = l) && 
+    lone l':List | 
+	(l' in allSublists[l] && l'.value = min[l] => 
+		(size[l] != 1 && remove[l,l'] != none && sort[remove[l,l']] != none => r.value = l'.value && r.next = sort[remove[l,l']]) && 
+		(size[l] != 1 && (remove[l,l'] = none || sort[remove[l,l']] = none) => r = none)
+	)
 }
 
 -- Keine Kreise
@@ -66,25 +110,17 @@ fun contain[l:List, i:Int] : Bool {
   {b:Bool | l.value = i => b = True && l.value != i && l.^next.value = i =>b = True && (l.value != i && l.^next.value != i) => b = False}
 }
 
+-- Kleinsten Wert der Liste ermitteln
+fun min[l:List] : Int {
+  {i:Int | all j:allElem[l] | i in allElem[l] && i <= j}
+}
+
 -- Größten Wert der Liste ermitteln
 fun max[l:List] : Int {
   {i:Int | all j:allElem[l] | i in allElem[l] && i >= j}
 }
 
---fun removeFromList[l:List, i:Int]: List {
---  {l':List | i not in allElem[l] => l' = l && (i in allElem[l] => (l'.))}
--- l.value = i => l' = l.next || l'.next.value = i => l'.next.value = i && n in contain[l,n] => n.next = n.next.next}
---}
-
---fun sortList[l:List]: List{
---{addToList[sortList[removeFromList[l,max[l].value]],max[l].value]}
---}
-
 -- Verhindert, dass das Universum leer ist
 fact{some List}
---fact{one r:List | some l:List, l':List | r = add [l,l']}
-
--- Unendliches Universum = verboten
---check {all l:List | all i:Int| sizeOfList[addToList[l,i]] = 1.plus[sizeOfList[l]]}
 
 run {} for 5 List
