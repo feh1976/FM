@@ -37,18 +37,18 @@ sig Person extends AccountHolder {
 }
 
 -- Verheiratet Person p mit Person p'
-fun marry[p:Person, p':Person] : set Person {
-  {one q:Person | p.male != p'.male && p.partner = none && p'.partner = none 
+fun marry[p:Person, p':Person, e:Economy] : one Economy {
+  {q:Person | p.male != p'.male && p.partner = none && p'.partner = none 
   => q = p && q.partner = p'}
-  +{one q':Person | p.male != p'.male && p.partner = none && p'.partner = none 
+  +{q':Person | p.male != p'.male && p.partner = none && p'.partner = none 
   =>  q' = p' && q'.partner = p}
 }
 
 -- Scheidet Person p und Person p'
-fun divorce[p:Person, p':Person] : set Person {
-  {one q:Person | all g:GemeinschaftsKonto | g.owner != p && g.owner2 != p && 
+fun divorce[p:Person, p':Person, e:Economy] : one Economy {
+  {q:Person | all g:GemeinschaftsKonto | g.owner != p && g.owner2 != p && 
    p.partner = p'.partner => q = p && q.partner = none}
-  +{one q':Person | all g:GemeinschaftsKonto | g.owner != p' && g.owner2 != p' &&  
+  +{q':Person | all g:GemeinschaftsKonto | g.owner != p' && g.owner2 != p' &&  
   p.partner = p'.partner =>  q' = p' && q'.partner = none}
 }
 
@@ -74,10 +74,11 @@ sig BankKonto extends Konto {
 }
 
 -- Gewährt einem Kunden einen Kredit
-fun grantCredit[a:Int, p:PrivatKonto, e:Economic] : Economic {
-{e':Economic
+fun grantCredit[a:Int, p:PrivatKonto, e:Economy] : Economy {
+{
+	e' : Economy
 }
-
+}
 -- Ein Konto, welches mindestens einer Person gehören muss
 abstract sig PersonenKonto extends Konto{
   owner : Person -- Ein Kontoinhaber
@@ -95,3 +96,5 @@ sig GemeinschaftsKonto extends PersonenKonto {
 
 -- Ein Privatkonto
 sig PrivatKonto extends PersonenKonto {}
+
+run {}

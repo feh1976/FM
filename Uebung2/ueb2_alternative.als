@@ -63,8 +63,8 @@ fact { all l:List | sort[l] != none => sort[l].value <= sort[l].^next.value }
 fact {
   all l,r:List | r = sort[l] => 
 	(size[l] = 1 => r = l) && 
-    lone l':List | 
-	(l' in allSublists[l] && l'.value = min[l] => 
+    some l':List | 
+	(l' in allSublists[l] && l'.value = min[l] && 
 		(size[l] != 1 && remove[l,l'] != none && sort[remove[l,l']] != none => r.value = l'.value && r.next = sort[remove[l,l']]) && 
 		(size[l] != 1 && (remove[l,l'] = none || sort[remove[l,l']] = none) => r = none)
 	)
