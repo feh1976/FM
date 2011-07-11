@@ -1,0 +1,34 @@
+MODULE main
+VAR
+  kundeA : process kunde();
+  kundeB : process kunde();
+  banksachbearbeiterA : process banksachbearbeiter();
+  banksachbearbeiterB : process banksachbearbeiter();
+SPEC
+
+
+
+MODULE kunde()
+VAR
+  bonitaet : 0..2;
+  status : {arbeitet, kreditbeantragen};
+ASSIGN
+  init(bonität) := 0;
+  init(status) := {arbeitet, kreditbeantragen};
+  next(bonitaet) := case
+                      bonitaet = 0 & status = arbeitet : 1;
+                      bonitaet = 1 & status = arbeitet : 2;
+                      TRUE : bonitaet;
+                    esac;
+
+
+
+
+MODULE banksachbearbeiter(kunde)
+VAR
+  status : {bereit, bonitaetspruefung, kreditbewilligung};
+ASSIGN
+  init(status) := bereit;
+  next(status) := case
+                    
+DEFINE
