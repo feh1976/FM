@@ -8,7 +8,7 @@ SPEC
 
 
 
-MODULE kunde()
+MODULE kunde
 VAR
   bonitaet : 0..2;
   status : {arbeitet, kreditbeantragen};
