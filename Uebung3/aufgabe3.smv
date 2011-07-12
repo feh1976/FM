@@ -1,51 +1,61 @@
 MODULE main
 VAR
-  -- die zwei Banksachbearbeiter
- -- banksachbearbeiter1 : process banksachbearbeiter();
- -- banksachbearbeiter2 : process banksachbearbeiter();
 
   -- zwei Beispielkunden
---  kundeA : process kunde({0..2});
+  kundeA : process kunde();
 -- kundeB : process kunde({0..2});
+
+  -- die zwei Banksachbearbeiter
+ banksachbearbeiter1 : process banksachbearbeiter(kundeA);
+ --banksachbearbeiter2 : process banksachbearbeiter();
 
 
 -- Ein Kunde 
 
 -- Kunden können bei Banksachbearbeitern ihrer Wahl Kredite beantragen
 
-MODULE kunde(bearbeiter)
+MODULE kunde()
 VAR
   bonitaet : 0..2;
-  status : {arbeitet, unbekannt, warte_auf_mitarbeiter, warte_auf_bearbeitung};
+  arbeitet : boolean;
+  status : {unbekannt, warte_auf_mitarbeiter, warte_auf_bearbeitung};
 ASSIGN
-  init(status) := {unbekannt};
+  init(status) := warte_auf_mitarbeiter;
+  init(arbeitet) := TRUE;
   next(bonitaet) := case
-                      bonitaet < 2 & status = arbeitet : bonitaet + 1;
+                      bonitaet < 2 & arbeitet : bonitaet + 1;
                       TRUE : bonitaet;
                     esac;
+  next(arbeitet) := arbeitet;
+FAIRNESS running
 
 
 
 -- Der Sachbearbeiter geht nach Anfrage in einen Zustand "Antragsbearbeitung" 
-  -- ü?ber, prü?ft die Bonität des Kunden und bewilligt ggf. schließlich den 
-  -- Kredit, der daraufhin ausgezahlt wird.
-MODULE banksachbearbeiter(bonitaet, neueAnfrage)
+-- ü?ber, prü?ft die Bonität des Kunden und bewilligt ggf. schließlich den 
+-- Kredit, der daraufhin ausgezahlt wird.
+
+MODULE banksachbearbeiter(k)
 VAR
   status : {bereit, bonitaetspruefung, auszahlung};
 ASSIGN
   init(status) := bereit;
-  next(neueAnfrage) := case
-                        status = bereit : FALSE;
-		        TRUE : neueAnfrage;
-                       esac;
   next(status) := case
-                    status = bereit & neueAnfrage = TRUE : bonitaetspruefung;
-                    status = bonitaetspruefung & neueAnfrage = FALSE & bonitaet > 0 : auszahlung;
-                    status = bonitaetspruefung & neueAnfrage = FALSE & bonitaet = 0 : bereit;
+                    status = bereit & k.status = warte_auf_mitarbeiter : bonitaetspruefung;
+                    status = bonitaetspruefung & k.status = warte_auf_bearbeitung & k.bonitaet > 0 : auszahlung;
+                    status = bonitaetspruefung & k.status = warte_auf_bearbeitung & k.bonitaet = 0 : bereit;
                     status = auszahlung : bereit;
                     TRUE : status;
                   esac;
-  next(bonitaet) := case
-                      status = auszahlung : bonitaet - 1;
-                      TRUE : bonitaet;
+  next(k.bonitaet) := case
+                        --status = auszahlung : k.bonitaet - 1;
+                        TRUE : k.bonitaet;
+                      esac;
+  next(k.status) := case
+                      status = bereit & k.status = warte_auf_mitarbeiter : warte_auf_bearbeitung;
+                      status = bonitaetspruefung & k.status = warte_auf_bearbeitung & k.bonitaet = 0 : unbekannt;
+                      status = auszahlung & k.status = warte_auf_bearbeitung : unbekannt;
+                      TRUE : k.status;
                     esac;
+FAIRNESS running
+
