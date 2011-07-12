@@ -1,8 +1,8 @@
-ï»¿MODULE main
+MODULE main
 VAR
   -- die zwei Banksachbearbeiter
-  banksachbearbeiter1 : process banksachbearbeiter();
-  banksachbearbeiter2 : process banksachbearbeiter();
+ -- banksachbearbeiter1 : process banksachbearbeiter();
+ -- banksachbearbeiter2 : process banksachbearbeiter();
 
   -- zwei Beispielkunden
 --  kundeA : process kunde({0..2});
@@ -11,7 +11,7 @@ VAR
 
 -- Ein Kunde 
 
--- Kunden kÃ¶nnen bei Banksachbearbeitern ihrer Wahl Kredite beantragen
+-- Kunden können bei Banksachbearbeitern ihrer Wahl Kredite beantragen
 
 MODULE kunde(bearbeiter)
 VAR
@@ -27,7 +27,7 @@ ASSIGN
 
 
 -- Der Sachbearbeiter geht nach Anfrage in einen Zustand "Antragsbearbeitung" 
-  -- Ã¼Ìˆber, prÃ¼Ìˆft die BonitÃ¤t des Kunden und bewilligt ggf. schlieÃŸlich den 
+  -- ü?ber, prü?ft die Bonität des Kunden und bewilligt ggf. schließlich den 
   -- Kredit, der daraufhin ausgezahlt wird.
 MODULE banksachbearbeiter(bonitaet, neueAnfrage)
 VAR
