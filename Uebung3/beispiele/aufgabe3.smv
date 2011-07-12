@@ -1,0 +1,39 @@
+MODULE main
+VAR
+  -- die zwei Banksachbearbeiter
+  banksachbearbeiter1 : process banksachbearbeiter();
+  banksachbearbeiter2 : process banksachbearbeiter();
+  -- zwei Beispielkunden
+  kundeA : process kunde({0..2});
+  kundeB : process kunde({0..2});
+
+
+-- Ein Kunde 
+
+-- Kunden können bei Banksachbearbeitern ihrer Wahl Kredite beantragen
+-- 
+MODULE kunde(bearbeiter)
+VAR
+  bonitaet : 0..2;
+  status : {arbeitet, kreditbeantragen};
+ASSIGN
+  -- Anfangsbonität zwischen 0 und 2
+  --init(bonitaet) := {0..2};
+  init(status) := {arbeitet, kreditbeantragen};
+  next(bonitaet) := case
+                      bonitaet = 0 & status = arbeitet : 1;
+                      bonitaet = 1 & status = arbeitet : 2;
+                      TRUE : bonitaet;
+                    esac;
+
+
+
+-- Der Sachbearbeiter geht nach Anfrage in einen Zustand "Antragsbearbeitung" 
+  -- ü̈ber, prü̈ft die Bonität des Kunden und bewilligt ggf. schließlich den 
+  -- Kredit, der daraufhin ausgezahlt wird.
+MODULE banksachbearbeiter()
+VAR
+  status : {bereit, bonitaetspruefung, kreditbewilligung};
+ASSIGN
+  init(status) := bereit;
+  -- next(status) := case;
